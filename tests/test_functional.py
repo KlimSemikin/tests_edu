@@ -1,4 +1,4 @@
-from browser.browser import Browser
+from framework.browser.browser import Browser
 from tests.pages.home_page import HomePage
 import allure
 

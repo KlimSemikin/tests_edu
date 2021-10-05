@@ -1,10 +1,10 @@
-from pages.base_page import BasePage
+from framework.pages.base_page import BasePage
 from selenium.webdriver.common.by import By
-from elements.text_box import TextBox
-from elements.label import Label
-from elements.button import Button
+from framework.elements.text_box import TextBox
+from framework.elements.label import Label
+from framework.elements.button import Button
 from selenium.webdriver.common.keys import Keys
-from browser.browser import Browser
+from framework.browser.browser import Browser
 # from
 
 
