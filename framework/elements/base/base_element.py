@@ -1,47 +1,45 @@
 # coding=utf-8
-from collections import OrderedDict
+from abc import ABC
 
-from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException  # StaleElementReferenceException
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from framework.browser.browser import Browser
+from framework.config.waits import Waits
 from framework.scripts import scripts_js
 from framework.utils.logger import Logger
-from framework.browser.browser import Browser
-from selenium.webdriver.common.by import By
 from framework.waits.wait_for_absence_of_element import WaitForAbsenceOfElementLocated
-from framework.waits.wait_present_with_custom_action import WaitPresentWithCustomAction
 from framework.waits.wait_for_contains_class import WaitForContainsClass
-from selenium.webdriver.common.action_chains import ActionChains
-from tests.config.waits import Waits
+from framework.waits.wait_present_with_custom_action import WaitPresentWithCustomAction
 
 
-class BaseElement(object):
+# from collections import OrderedDict
+
+
+class BaseElement(ABC):
     coordinate_x = 'x'
     coordinate_y = 'y'
 
-    # @abstractmethod
-    def __init__(self, search_condition_of, loc, name_of):
-        self.__search_condition = search_condition_of
-        self.__locator = loc
-        self.__name = name_of
+    def __init__(self, search_condition, locator, name):
+        self.__search_condition = search_condition
+        self.__locator = locator
+        self.__name = name
+        self.__type = self.__class__.__name__
 
     def __getitem__(self, key):
         if self.__search_condition != By.XPATH:
             raise TypeError("__getitem__ for BaseElement possible only when __search_condition == By.XPATH")
         else:
             return type(self)(By.XPATH, self.__locator + "[" + str(key) + "]", self.__name)
-            # return type(self)(By.XPATH, "(" + self.__locator + ")" + "[" + str(key) + "]", self.__name)
 
-    def __call__(self, sublocator, new_name_of=None):
-        if new_name_of is not None:
-            return type(self)(By.XPATH, self.__locator + sublocator, new_name_of)
-        else:
-            return type(self)(By.XPATH, self.__locator + sublocator, self.__name)
+    def __call__(self, sub_locator, new_name_of=None):
+        return type(self)(By.XPATH, self.__locator + sub_locator, new_name_of or self.__name)
 
-    # @abstractmethod
     def get_element_type(self):
-        pass
+        return self.__type
 
     def get_locator(self):
         return self.__locator
@@ -106,36 +104,28 @@ class BaseElement(object):
         self.send_keys_without_click(key)
 
     def send_keys_without_click(self, key):
-        Logger.info("send_keys: Изменение текста для элемента '" + self.get_name() + " " + self.__class__.__name__ +
+        Logger.info("send_keys: Изменение текста для элемента '" + self.get_name() + " " + self.__type +
                     "'" + "' на текст => '" + key + "'")
         self.wait_for_is_visible()
         element = self.wait_for_clickable()
         element.send_keys(key)
 
-    # def click(self):
-    #     RobotLogger.info("click: Щелчок по элемету '" + self.get_name() + "'")
-    #     element = self.wait_for_clickable()
-    #     element.click()
-
     def click(self):
-        Logger.info("click: Щелчок по элемету '" + self.get_name() + " " + self.__class__.__name__ + "'")
+        Logger.info("click: Щелчок по элемету '" + self.get_name() + " " + self.__type + "'")
+        element = self.wait_for_clickable()
+        element.click()
 
-        def func():
-            self.find_element().click()
-            return True
-
-        self.wait_for(func)
-
-    def wait_for(self, condition, *args, **kwargs):
-        def func(driver):
-            try:
-                value = condition(*args, **kwargs)
-                return value
-            except StaleElementReferenceException:
-                return False
-
-        return WebDriverWait(Browser.get_browser().get_driver(), Waits.EXPLICITLY_WAIT_SEC,
-                             ignored_exceptions=[StaleElementReferenceException]).until(func)
+    # @staticmethod
+    # def wait_for(condition, *args, **kwargs):
+    #     def func(driver):
+    #         try:
+    #             value = condition(*args, **kwargs)
+    #             return value
+    #         except StaleElementReferenceException:
+    #             return False
+    #
+    #     return WebDriverWait(Browser.get_browser().get_driver(), Waits.EXPLICITLY_WAIT_SEC,
+    #                          ignored_exceptions=[StaleElementReferenceException]).until(func)
 
     def js_click(self):
         element = self.wait_for_clickable()
@@ -179,7 +169,7 @@ class BaseElement(object):
 
     def get_text_content(self):
         self.wait_for_is_visible()
-        return Browser.get_browser().get_driver().\
+        return Browser.get_browser().get_driver(). \
             execute_script("return arguments[0].textContent;", self.find_element())
 
     def get_attribute(self, attr):
@@ -213,6 +203,13 @@ class BaseElement(object):
         self.wait_for_is_present()
         waiter = ec.visibility_of_element_located((self.get_search_condition(), self.get_locator()))
         self.wait_for_check_by_condition(method_to_check=waiter, message=" не видим")
+
+    def is_invisible(self):
+        try:
+            self.wait_for_invisibility()
+        except TimeoutException:
+            return False
+        return True
 
     def wait_for_is_present(self):
         waiter = ec.presence_of_element_located((self.get_search_condition(), self.get_locator()))
@@ -294,13 +291,13 @@ class BaseElement(object):
         element = self.get_n_element_from_top(number_from_top)
         return element.__locator.rpartition('[')[2].replace(']', '')
 
-    def get_element_number_from_top(self, element_index=1):
-        elements = self.get_elements()
-        number_from_top_and_index_list = {}
-        for i in range(0, len(elements)):
-            number_from_top_and_index_list[i] = elements[i].location[BaseElement.coordinate_y]
-        indices_dict = OrderedDict(sorted(number_from_top_and_index_list.items(), key=lambda t: t[1]))
-        return list(indices_dict.keys()).index(element_index)
+    # def get_element_number_from_top(self, element_index=1):
+    #     elements = self.get_elements()
+    #     number_from_top_and_index_list = {}
+    #     for i in range(0, len(elements)):
+    #         number_from_top_and_index_list[i] = elements[i].location[BaseElement.coordinate_y]
+    #     indices_dict = OrderedDict(sorted(number_from_top_and_index_list.items(), key=lambda t: t[1]))
+    #     return list(indices_dict.keys()).index(element_index)
 
     def get_location(self):
         return self.find_element().location

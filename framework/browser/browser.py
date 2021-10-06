@@ -2,14 +2,14 @@
 from selenium.common.exceptions import NoSuchWindowException, TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
 
-from tests.config.waits import Waits
-from tests.config.browser import BrowserConfig
 from framework.browser.browser_factory import BrowserFactory
+from framework.config.browser import BrowserConfig
+from framework.config.waits import Waits
+from framework.singleton import Singleton
 from framework.utils.logger import Logger
 from framework.waits.wait_for_custom_event import WaitForCustomEvent
 from framework.waits.wait_for_ready_state_complete import WaitForReadyStateComplete
 from framework.waits.wait_for_true_with_action import WaitForTrueWithAction
-from framework.singleton import Singleton
 
 
 class Browser(metaclass=Singleton):
@@ -158,7 +158,8 @@ class Browser(metaclass=Singleton):
             Logger.warning(error_msg)
             raise TimeoutException(error_msg)
 
-    def is_wait_successful(self, wait_function, *args):
+    @staticmethod
+    def is_wait_successful(wait_function, *args):
         try:
             wait_function(*args)
         except TimeoutException:

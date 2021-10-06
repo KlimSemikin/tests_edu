@@ -1,12 +1,13 @@
 # coding=utf-8
 
+from os import environ
+
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
-from tests.config.browser import BrowserConfig, Grid
+from framework.config.browser import BrowserConfig, Grid
 from framework.constants import browsers
-from os import environ
 
 
 class BrowserFactory:

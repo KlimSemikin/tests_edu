@@ -1,34 +1,32 @@
+from abc import ABC
+
 from framework.browser.browser import Browser
-from framework.elements.label import Label
 from framework.utils.logger import Logger
 
 
-class BasePage:
-    def __init__(self, search_condition, locator, page_name):
-        self.locator = locator
-        self.page_name = page_name
-        self.search_condition = search_condition
+class BasePage(ABC):
+    def __init__(self, element):
+        self._base_element = element
+        self._page_name = self.__class__.__name__
 
     def wait_page_to_load(self):
-        Logger.info("Ожидание загрузки страницы " + self.page_name + " с помощью js")
+        Logger.info("Ожидание загрузки страницы " + self._page_name + " с помощью js")
         Browser.get_browser().wait_for_page_to_load()
 
     def is_opened(self):
-        Logger.info("Проверка, открыта ли страница " + self.page_name)
+        Logger.info("Проверка, открыта ли страница " + self._page_name)
         self.wait_page_to_load()
-        return Browser.get_browser().is_wait_successful(
-            Label(self.search_condition, self.locator, self.page_name).wait_for_is_visible)
+        return Browser.get_browser().is_wait_successful(self._base_element.wait_for_is_visible)
 
     def wait_for_page_closed(self):
         self.wait_page_to_load()
-        return Browser.get_browser().is_wait_successful(
-            Label(self.search_condition, self.locator, self.page_name).wait_for_is_absent)
+        return Browser.get_browser().is_wait_successful(self._base_element.wait_for_is_absent)
 
     def wait_for_page_opened(self):
-        Logger.info("Ожидание загрузки страницы " + self.page_name + " и видимости идентифицирующего ее элемента")
+        Logger.info("Ожидание загрузки страницы " + self._page_name + " и видимости идентифицирующего ее элемента")
         self.wait_page_to_load()
-        Label(self.search_condition, self.locator, self.page_name).wait_for_is_visible()
+        self._base_element.wait_for_is_visible()
 
     def refresh_page(self):
-        Logger.info("Обновление страницы " + self.page_name)
+        Logger.info("Обновление страницы " + self._page_name)
         Browser.get_browser().refresh_page()
