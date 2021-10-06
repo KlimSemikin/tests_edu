@@ -14,34 +14,30 @@ from framework.waits.wait_present_with_custom_action import WaitPresentWithCusto
 from framework.waits.wait_for_contains_class import WaitForContainsClass
 from selenium.webdriver.common.action_chains import ActionChains
 from tests.config.waits import Waits
+from abc import ABC
 
 
-class BaseElement(object):
+class BaseElement(ABC):
     coordinate_x = 'x'
     coordinate_y = 'y'
 
-    # @abstractmethod
-    def __init__(self, search_condition_of, loc, name_of):
-        self.__search_condition = search_condition_of
-        self.__locator = loc
-        self.__name = name_of
+    def __init__(self, search_condition, locator, name):
+        self.__search_condition = search_condition
+        self.__locator = locator
+        self.__name = name
+        self.__type = self.__class__.__name__
 
     def __getitem__(self, key):
         if self.__search_condition != By.XPATH:
             raise TypeError("__getitem__ for BaseElement possible only when __search_condition == By.XPATH")
         else:
             return type(self)(By.XPATH, self.__locator + "[" + str(key) + "]", self.__name)
-            # return type(self)(By.XPATH, "(" + self.__locator + ")" + "[" + str(key) + "]", self.__name)
 
-    def __call__(self, sublocator, new_name_of=None):
-        if new_name_of is not None:
-            return type(self)(By.XPATH, self.__locator + sublocator, new_name_of)
-        else:
-            return type(self)(By.XPATH, self.__locator + sublocator, self.__name)
+    def __call__(self, sub_locator, new_name_of=None):
+        return type(self)(By.XPATH, self.__locator + sub_locator, new_name_of or self.__name)
 
-    # @abstractmethod
     def get_element_type(self):
-        pass
+        return self.__type
 
     def get_locator(self):
         return self.__locator
@@ -106,7 +102,7 @@ class BaseElement(object):
         self.send_keys_without_click(key)
 
     def send_keys_without_click(self, key):
-        Logger.info("send_keys: Изменение текста для элемента '" + self.get_name() + " " + self.__class__.__name__ +
+        Logger.info("send_keys: Изменение текста для элемента '" + self.get_name() + " " + self.__type+
                     "'" + "' на текст => '" + key + "'")
         self.wait_for_is_visible()
         element = self.wait_for_clickable()
@@ -118,7 +114,7 @@ class BaseElement(object):
     #     element.click()
 
     def click(self):
-        Logger.info("click: Щелчок по элемету '" + self.get_name() + " " + self.__class__.__name__ + "'")
+        Logger.info("click: Щелчок по элемету '" + self.get_name() + " " + self.__type + "'")
 
         def func():
             self.find_element().click()
