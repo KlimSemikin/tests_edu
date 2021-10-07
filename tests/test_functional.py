@@ -2,6 +2,9 @@ from framework.browser.browser import Browser
 from tests.pages.welcome_page import WelcomePage
 from tests.pages.card_one_page import CardOnePage
 from tests.pages.card_two_page import CardTwoPage
+from tests.pages.card_three_page import CardThreePage
+from framework.utils.random_generator import RandomGenerator
+import os
 import allure
 
 
@@ -23,3 +26,11 @@ class TestFunctional(object):
             card_one_page.login(password, email, domain, domain_2)
             card_two_page = CardTwoPage()
             assert card_two_page.is_opened()
+
+            nums = RandomGenerator.generate_n_random_numbers_in_range(3, 1, 20)
+            card_two_page.select_interests(nums)
+            card_two_page.click_upload_button()
+            os.system(os.getcwd() + '\\' + '\\tools\\' + 'upload_image_script.exe')
+            card_two_page.click_next_btn()
+            card_three_page = CardThreePage()
+            assert card_three_page.is_opened()

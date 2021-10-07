@@ -24,6 +24,8 @@ class CardOnePage(BasePage):
 
     _DROPDOWN = DropDown(_SEARCH_CONDITION, locator='//div[@class="dropdown__header"]', name='DomainsList')
 
+    _loc_domain_option = '''//div[@class="dropdown__list-item" and contains(text(),'{}')]'''
+
     def __init__(self):
         super().__init__(element=self._TXB_PASSWORD)
         self.wait_for_page_opened()
@@ -37,8 +39,8 @@ class CardOnePage(BasePage):
         self._TXB_DOMAIN.send_keys(domain)
         self._DROPDOWN.click()
         select_domain = Button(self._SEARCH_CONDITION,
-                               locator=f'''//div[@class="dropdown__list-item" and contains(text(),'{domain_2}')]''',
-                               name='NextButton')
+                               locator=self._loc_domain_option.format(domain_2),
+                               name=f'Domain \'{domain_2}\'')
         select_domain.click()
         self._BTN_ACCEPT_TERMS.click()
         self._BTN_NEXT.click()
