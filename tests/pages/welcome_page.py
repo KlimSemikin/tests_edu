@@ -17,5 +17,5 @@ class WelcomePage(BasePage):
         super().__init__(element=self._LNK_HERE)
         self.wait_for_page_opened()
 
-    def to_next_page(self):
+    def to_card_one_page(self):
         self._LNK_HERE.click()

@@ -18,6 +18,8 @@ class CardOnePage(BasePage):
 
     _TXB_DOMAIN = TextBox(_SEARCH_CONDITION, locator='//input[@placeholder="Domain"]', name='Domain')
 
+    _loc_domain_option = '''//div[@class="dropdown__list-item" and contains(text(),'{}')]'''
+
     _BTN_ACCEPT_TERMS = Button(_SEARCH_CONDITION, locator='//span[@class="checkbox__box"]', name='AcceptTerms')
 
     _BTN_NEXT = Button(_SEARCH_CONDITION, locator='//a[@class="button--secondary"]', name='NextButton')
@@ -28,7 +30,7 @@ class CardOnePage(BasePage):
 
     _LBL_HELPER_TITLE = Label(_SEARCH_CONDITION, locator='//*[@class="help-form__title"]', name='HelperTitle')
 
-    _loc_domain_option = '''//div[@class="dropdown__list-item" and contains(text(),'{}')]'''
+    _BTN_NOT_REALLY_NO = Button(_SEARCH_CONDITION, locator='//button[@class="button button--solid button--transparent"]', name='NotReallyNot')
 
     def __init__(self):
         super().__init__(element=self._TXB_PASSWORD)
@@ -55,3 +57,11 @@ class CardOnePage(BasePage):
 
     def helper_is_invisible(self):
         return self._LBL_HELPER_TITLE.is_invisible()
+
+    def accept_cookies(self):
+        self._BTN_NOT_REALLY_NO.wait_for_visibility()
+        self._BTN_NOT_REALLY_NO.click()
+        self._BTN_NOT_REALLY_NO.wait_for_invisibility()
+
+    def the_form_is_disappeared(self):
+        return self._BTN_NOT_REALLY_NO.is_invisible()
