@@ -210,6 +210,13 @@ class BaseElement(ABC):
         waiter = ec.visibility_of_element_located((self.get_search_condition(), self.get_locator()))
         self.wait_for_check_by_condition(method_to_check=waiter, message=" не видим")
 
+    def is_invisible(self):
+        try:
+            self.wait_for_invisibility()
+        except TimeoutException:
+            return False
+        return True
+
     def wait_for_is_present(self):
         waiter = ec.presence_of_element_located((self.get_search_condition(), self.get_locator()))
         self.wait_for_check_by_condition(method_to_check=waiter, message=" не существует")

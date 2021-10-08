@@ -24,6 +24,10 @@ class CardOnePage(BasePage):
 
     _DROPDOWN = DropDown(_SEARCH_CONDITION, locator='//div[@class="dropdown__header"]', name='DomainsList')
 
+    _BTN_SEND_TO_BOTTOM = Button(_SEARCH_CONDITION, locator='//button[@class="button button--solid button--blue help-form__send-to-bottom-button"]', name='SendToBottom')
+
+    _LBL_HELPER_TITLE = Label(_SEARCH_CONDITION, locator='//*[@class="help-form__title"]', name='HelperTitle')
+
     _loc_domain_option = '''//div[@class="dropdown__list-item" and contains(text(),'{}')]'''
 
     def __init__(self):
@@ -44,3 +48,10 @@ class CardOnePage(BasePage):
         select_domain.click()
         self._BTN_ACCEPT_TERMS.click()
         self._BTN_NEXT.click()
+
+    def hide_helper(self):
+        self._BTN_SEND_TO_BOTTOM.click()
+        self._LBL_HELPER_TITLE.wait_for_invisibility()
+
+    def helper_is_invisible(self):
+        return self._LBL_HELPER_TITLE.is_invisible()
