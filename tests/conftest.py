@@ -1,5 +1,6 @@
-import pytest
 import allure
+import pytest
+
 from framework.browser.browser import Browser
 from tests.config.browser import BrowserConfig
 from tests.config.browser import Grid
