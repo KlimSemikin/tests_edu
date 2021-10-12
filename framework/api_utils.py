@@ -1,8 +1,9 @@
-from framework.utils.api_utils import ApiUtils
+import requests
+
 from framework.utils.json_converter import JsonConverter
 
 
-class ApiController:
+class ApiUtils:
     _status_code = None
     _data = None
     _url = None
@@ -13,14 +14,14 @@ class ApiController:
 
     @classmethod
     def get_from_api(cls, sub_url):
-        result = ApiUtils.get_from_url(cls._url + sub_url)
+        result = requests.get(cls._url + sub_url)
         cls._status_code = result.status_code
         cls._data = result.text
 
     @classmethod
     def post_to_api(cls, data, sub_url):
         js_data = JsonConverter.to_json(data)
-        result = ApiUtils.post_to_url(js_data, str(cls._url + sub_url))
+        result = requests.post(cls._url + sub_url, js_data)
         cls._status_code = result.status_code
         cls._data = result.text
 
