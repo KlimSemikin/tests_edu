@@ -13,7 +13,7 @@ from framework.waits.wait_for_absence_of_element import WaitForAbsenceOfElementL
 from framework.waits.wait_present_with_custom_action import WaitPresentWithCustomAction
 from framework.waits.wait_for_contains_class import WaitForContainsClass
 from selenium.webdriver.common.action_chains import ActionChains
-from tests.config.waits import Waits
+from task_3_place_holder_api.tests import Waits
 
 
 class BaseElement(object):

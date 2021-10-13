@@ -1,7 +1,7 @@
 import pytest
 
-from framework.api_utils import ApiUtils
-from tests import test_data
+from framework.utils.api_utils import ApiUtils
+from task_3_place_holder_api.tests import test_data
 
 
 @pytest.fixture(scope="module")

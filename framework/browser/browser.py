@@ -2,8 +2,8 @@
 from selenium.common.exceptions import NoSuchWindowException, TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
 
-from tests.config.waits import Waits
-from tests.config.browser import BrowserConfig
+from task_3_place_holder_api.tests import Waits
+from task_3_place_holder_api.tests import BrowserConfig
 from framework.browser.browser_factory import BrowserFactory
 from framework.utils.logger import Logger
 from framework.waits.wait_for_custom_event import WaitForCustomEvent
