@@ -19,7 +19,8 @@ class TestUserInterface(object):
         card_one_page = CardOnePage()
         assert card_one_page.is_opened(), 'CardOnePage не открыта'
 
-        card_one_page.enter_pass_email_domains(td.password, td.email, td.domain, td.domain_2)
+        password = RandomGenerator.generate_password()
+        card_one_page.enter_pass_email_domains(password, td.email, td.domain, td.domain_2)
         card_one_page.accept_terms()
         card_one_page.click_next_button()
         card_two_page = CardTwoPage()

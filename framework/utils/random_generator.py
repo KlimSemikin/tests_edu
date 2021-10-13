@@ -1,4 +1,5 @@
 import random
+import secrets
 import string
 
 
@@ -20,3 +21,9 @@ class RandomGenerator:
             if num not in answer:
                 answer.append(num)
         return answer
+
+    @classmethod
+    def generate_password(cls, length=20):
+        alphabet = string.ascii_letters + string.digits
+        password = ''.join(secrets.choice(alphabet) for _ in range(length))
+        return password
