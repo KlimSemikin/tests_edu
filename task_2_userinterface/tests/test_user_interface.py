@@ -1,12 +1,12 @@
 import os
 
-import tests.test_data as td
+import task_2_userinterface.tests.test_data as td
 from framework.browser.browser import Browser
 from framework.utils.random_generator import RandomGenerator
-from tests.pages.card_one_page import CardOnePage
-from tests.pages.card_three_page import CardThreePage
-from tests.pages.card_two_page import CardTwoPage
-from tests.pages.welcome_page import WelcomePage
+from task_2_userinterface.pages.card_one_page import CardOnePage
+from task_2_userinterface.pages.card_three_page import CardThreePage
+from task_2_userinterface.pages.card_two_page import CardTwoPage
+from task_2_userinterface.pages.welcome_page import WelcomePage
 
 
 class TestUserInterface(object):
@@ -27,7 +27,7 @@ class TestUserInterface(object):
         assert card_two_page.is_opened(), 'CardTwoPage не открыта'
 
         card_two_page.click_upload_button()
-        os.system(td.image_path.format(os.getcwd()))
+        os.system(td.image_path.format(os.getcwd()[:-5]))
         card_two_page.select_three_random_interests()
         card_two_page.click_next_btn()
         card_three_page = CardThreePage()

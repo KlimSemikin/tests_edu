@@ -4,7 +4,7 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 
-from tests.config.browser import BrowserConfig, Grid
+from task_2_userinterface.config.browser import BrowserConfig, Grid
 from framework.constants import browsers
 from os import environ
 

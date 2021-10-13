@@ -2,8 +2,8 @@ import allure
 import pytest
 
 from framework.browser.browser import Browser
-from tests.config.browser import BrowserConfig
-from tests.config.browser import Grid
+from task_2_userinterface.config.browser import BrowserConfig
+from task_2_userinterface.config.browser import Grid
 
 
 def pytest_addoption(parser):
