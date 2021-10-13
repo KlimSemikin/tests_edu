@@ -6,23 +6,21 @@ from framework.pages.base_page import BasePage
 
 
 class CardTwoPage(BasePage):
-    _SEARCH_CONDITION = By.XPATH
-
-    _BTN_UNSELECT_ALL = Button(_SEARCH_CONDITION,
+    _BTN_UNSELECT_ALL = Button(By.XPATH,
                                locator='//label[@for="interest_unselectall"]//span[@class="checkbox__box"]',
                                name='UnselectAll')
 
-    _BTN_UPLOAD = Button(_SEARCH_CONDITION, locator='//a[@class="avatar-and-interests__upload-button"]', name='Upload')
+    _BTN_UPLOAD = Button(By.XPATH, locator='//a[@class="avatar-and-interests__upload-button"]', name='Upload')
 
-    _BTNS_ALL_INTERESTS = Button(_SEARCH_CONDITION,
+    _BTNS_ALL_INTERESTS = Button(By.XPATH,
                                  locator="//div[@class='avatar-and-interests__interests-list__item']", name='Interests')
 
-    _BTN_NEXT = Button(_SEARCH_CONDITION,
-                       locator='//button[@class="button button--stroked button--white button--fluid"]', name='Next')
+    _BTN_NEXT = Button(By.XPATH,
+                       locator='//button[@name="button" and contains(text(), "Next")]', name='Next')
 
-    _LBL_AVATAR = Label(_SEARCH_CONDITION, locator='//div[@class="avatar-and-interests__avatar-image"]', name='Avatar')
+    _LBL_AVATAR = Label(By.XPATH, locator='//div[@class="avatar-and-interests__avatar-image"]', name='Avatar')
 
-    _LOC_CHECKBOX = "//span[@class='icon icon-check checkbox__check']"
+    _LOC_CHECKBOX = '//span[contains(@class, "checkbox__check")]'
 
     def __init__(self):
         super().__init__(element=self._BTN_UPLOAD)

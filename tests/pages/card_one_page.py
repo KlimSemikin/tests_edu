@@ -8,33 +8,29 @@ from framework.pages.base_page import BasePage
 
 
 class CardOnePage(BasePage):
-    _SEARCH_CONDITION = By.XPATH
+    _TXB_PASSWORD = TextBox(By.XPATH, locator='//input[@placeholder="Choose Password"]', name='Password')
 
-    _TXB_PASSWORD = TextBox(_SEARCH_CONDITION, locator='//input[@placeholder="Choose Password"]', name='Password')
+    _TXB_EMAIL = TextBox(By.XPATH, locator='//input[@placeholder="Your email"]', name='Email')
 
-    _TXB_EMAIL = TextBox(_SEARCH_CONDITION, locator='//input[@placeholder="Your email"]', name='Email')
-
-    _TXB_DOMAIN = TextBox(_SEARCH_CONDITION, locator='//input[@placeholder="Domain"]', name='Domain')
+    _TXB_DOMAIN = TextBox(By.XPATH, locator='//input[@placeholder="Domain"]', name='Domain')
 
     _loc_domain_option = '''//div[@class="dropdown__list-item" and contains(text(),'{}')]'''
 
-    _BTN_ACCEPT_TERMS = Button(_SEARCH_CONDITION, locator='//span[@class="checkbox__box"]', name='AcceptTerms')
+    _BTN_ACCEPT_TERMS = Button(By.XPATH, locator='//span[@class="checkbox__box"]', name='AcceptTerms')
 
-    _BTN_NEXT = Button(_SEARCH_CONDITION, locator='//a[@class="button--secondary"]', name='NextButton')
+    _BTN_NEXT = Button(By.XPATH, locator='//a[@class="button--secondary"]', name='NextButton')
 
-    _DROPDOWN = DropDown(_SEARCH_CONDITION, locator='//div[@class="dropdown__header"]', name='DomainsList')
+    _DROPDOWN = DropDown(By.XPATH, locator='//div[@class="dropdown__header"]', name='DomainsList')
 
-    _BTN_SEND_TO_BOTTOM = Button(_SEARCH_CONDITION,
-                                 locator='//button[@class="button button--solid button--blue help-form__send-to-bottom-button"]',
+    _BTN_SEND_TO_BOTTOM = Button(By.XPATH, locator='//button[contains(@class, "help-form__send-to-bottom-button")]',
                                  name='SendToBottom')
 
-    _LBL_HELPER_TITLE = Label(_SEARCH_CONDITION, locator='//*[@class="help-form__title"]', name='HelperTitle')
+    _LBL_HELPER_TITLE = Label(By.XPATH, locator='//*[@class="help-form__title"]', name='HelperTitle')
 
-    _BTN_NOT_REALLY_NO = Button(_SEARCH_CONDITION,
-                                locator='//button[@class="button button--solid button--transparent"]',
-                                name='NotReallyNot')
+    _BTN_NOT_REALLY_NO = Button(By.XPATH, locator='//button[@name="button" and contains(text(), "Not really, no")]',
+                                name='NotReallyNo')
 
-    _LBL_TIMER = Label(_SEARCH_CONDITION, locator='//div[@class="timer timer--white timer--center"]', name='Timer')
+    _LBL_TIMER = Label(By.XPATH, locator='//div[contains(@class, "timer--white")]', name='Timer')
 
     def __init__(self):
         super().__init__(element=self._TXB_PASSWORD)
@@ -48,7 +44,7 @@ class CardOnePage(BasePage):
         self._TXB_DOMAIN.clear_field()
         self._TXB_DOMAIN.send_keys(domain)
         self._DROPDOWN.click()
-        select_domain = Button(self._SEARCH_CONDITION,
+        select_domain = Button(By.XPATH,
                                locator=self._loc_domain_option.format(domain_2),
                                name=f'Domain \'{domain_2}\'')
         select_domain.click()
