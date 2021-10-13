@@ -1,8 +1,9 @@
 from selenium.webdriver.common.by import By
 
 from framework.elements.button import Button
+from framework.elements.checkbox import Checkbox
+from framework.elements.content import Content
 from framework.elements.dropdown import DropDown
-from framework.elements.label import Label
 from framework.elements.text_box import TextBox
 from framework.pages.base_page import BasePage
 
@@ -16,7 +17,7 @@ class CardOnePage(BasePage):
 
     _loc_domain_option = '''//div[@class="dropdown__list-item" and contains(text(),'{}')]'''
 
-    _BTN_ACCEPT_TERMS = Button(By.XPATH, locator='//span[@class="checkbox__box"]', name='AcceptTerms')
+    _CB_ACCEPT_TERMS = Checkbox(By.XPATH, locator='//span[@class="checkbox__box"]', name='AcceptTerms')
 
     _BTN_NEXT = Button(By.XPATH, locator='//a[@class="button--secondary"]', name='NextButton')
 
@@ -25,12 +26,12 @@ class CardOnePage(BasePage):
     _BTN_SEND_TO_BOTTOM = Button(By.XPATH, locator='//button[contains(@class, "help-form__send-to-bottom-button")]',
                                  name='SendToBottom')
 
-    _LBL_HELPER_TITLE = Label(By.XPATH, locator='//*[@class="help-form__title"]', name='HelperTitle')
+    _CONT_HELPER_TITLE = Content(By.XPATH, locator='//*[@class="help-form__title"]', name='HelperTitle')
 
     _BTN_NOT_REALLY_NO = Button(By.XPATH, locator='//button[@name="button" and contains(text(), "Not really, no")]',
                                 name='NotReallyNo')
 
-    _LBL_TIMER = Label(By.XPATH, locator='//div[contains(@class, "timer--white")]', name='Timer')
+    _CONT_TIMER = Content(By.XPATH, locator='//div[contains(@class, "timer--white")]', name='Timer')
 
     def __init__(self):
         super().__init__(element=self._TXB_PASSWORD)
@@ -50,17 +51,17 @@ class CardOnePage(BasePage):
         select_domain.click()
 
     def accept_terms(self):
-        self._BTN_ACCEPT_TERMS.click()
+        self._CB_ACCEPT_TERMS.click()
 
     def click_next_button(self):
         self._BTN_NEXT.click()
 
     def hide_helper(self):
         self._BTN_SEND_TO_BOTTOM.click()
-        self._LBL_HELPER_TITLE.wait_for_invisibility()
+        self._CONT_HELPER_TITLE.wait_for_invisibility()
 
     def helper_is_invisible(self):
-        return self._LBL_HELPER_TITLE.is_invisible()
+        return self._CONT_HELPER_TITLE.is_invisible()
 
     def accept_cookies(self):
         self._BTN_NOT_REALLY_NO.wait_for_visibility()
@@ -71,4 +72,4 @@ class CardOnePage(BasePage):
         return self._BTN_NOT_REALLY_NO.is_invisible()
 
     def get_timer_time(self):
-        return self._LBL_TIMER.get_text()
+        return self._CONT_TIMER.get_text()
