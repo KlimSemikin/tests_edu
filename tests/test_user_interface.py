@@ -28,8 +28,7 @@ class TestUserInterface(object):
 
         card_two_page.click_upload_button()
         os.system(td.image_path.format(os.getcwd()))
-        nums = RandomGenerator.generate_n_random_numbers_in_range(3, 1, 20)
-        card_two_page.select_interests(nums)
+        card_two_page.select_three_random_interests()
         card_two_page.click_next_btn()
         card_three_page = CardThreePage()
         assert card_three_page.is_opened(), 'CardThreePage не открыта'

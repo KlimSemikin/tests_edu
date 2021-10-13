@@ -4,6 +4,7 @@ from framework.elements.button import Button
 from framework.elements.checkbox import Checkbox
 from framework.elements.content import Content
 from framework.pages.base_page import BasePage
+from framework.utils.random_generator import RandomGenerator
 
 
 class CardTwoPage(BasePage):
@@ -19,18 +20,18 @@ class CardTwoPage(BasePage):
 
     _CONT_AVATAR = Content(By.XPATH, locator='//div[@class="avatar-and-interests__avatar-image"]', name='Avatar')
 
-    _LOC_CHECKBOX = '//span[contains(@class, "checkbox__check")]'
+    _LOC_CHECKBOX = '//span[@class="checkbox__box"]'
 
     def __init__(self):
         super().__init__(element=self._BTN_UPLOAD)
         self.wait_for_page_opened()
 
-    def select_interests(self, numbers):
-        self._CB_UNSELECT_ALL.js_click()
-        for i in numbers:
+    def select_three_random_interests(self):
+        self._CB_UNSELECT_ALL.click()
+        for i in RandomGenerator.generate_n_random_numbers_in_range(n=3, a=1, b=20):
             interest = self._CBS_ALL_INTERESTS[i]
             interest_check_box = interest(sub_locator=self._LOC_CHECKBOX, new_name_of=f'Interest number {i}')
-            interest_check_box.js_click()
+            interest_check_box.click()
 
     def click_next_btn(self):
         self._CONT_AVATAR.wait_for_is_present()

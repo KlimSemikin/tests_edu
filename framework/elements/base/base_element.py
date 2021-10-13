@@ -108,19 +108,10 @@ class BaseElement(ABC):
         element = self.wait_for_clickable()
         element.send_keys(key)
 
-    # def click(self):
-    #     RobotLogger.info("click: Щелчок по элемету '" + self.get_name() + "'")
-    #     element = self.wait_for_clickable()
-    #     element.click()
-
     def click(self):
         Logger.info("click: Щелчок по элемету '" + self.get_name() + " " + self.__type + "'")
-
-        def func():
-            self.find_element().click()
-            return True
-
-        self.wait_for(func)
+        element = self.wait_for_clickable()
+        element.click()
 
     def wait_for(self, condition, *args, **kwargs):
         def func(driver):
