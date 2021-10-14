@@ -1,5 +1,6 @@
 from framework.utils.api_utils import ApiUtils
 from framework.utils.json_converter import JsonConverter
+from task_3_place_holder_api.post import Post
 
 
 class PlaceHolderApi:
@@ -10,49 +11,54 @@ class PlaceHolderApi:
         cls._url = base_url
 
     @classmethod
-    def _connect_to_api(cls, request, id='', json_data=None):
+    def _connect_to_api(cls, request, sub_url, id='', json_data=None):
         if request == 'get':
-            result = ApiUtils.get_from_api(f'{cls._url}/posts/{id}')
+            result = ApiUtils.get_from_api(f'{cls._url}/{sub_url}/{id}')
         elif request == 'post':
-            result = ApiUtils.post_to_api(f'{cls._url}/posts', json_data)
+            result = ApiUtils.post_to_api(f'{cls._url}/{sub_url}', json_data)
         else:
             raise Exception('Wrong request name')
 
         data_from_api = result.text
+        post_data = JsonConverter.from_json(data_from_api)
         is_json = JsonConverter.is_json(data_from_api)
         status = result.status_code
-        return status, is_json, data_from_api
+        return post_data, is_json, status
 
     @classmethod
-    def _make_dict_from_data(cls, status, is_json, data_from_api):
-        post_dict = {
-            'status': status,
-            'is_json': is_json,
-        }
+    def class_maker(cls, data, is_json, status):
+        if type(data) is dict:
+            if not data: data['is_empty'] = True
+            data['is_json'] = is_json
+            data['status'] = status
+            post = Post(**data)
+            return post
 
-        if is_json:
-            data = JsonConverter.from_json(data_from_api)
-            if type(data) is dict:
-                post_dict['data'] = type('Post', (), data)()
-            elif type(data) is list:
-                post_dict['data'] = [type('Post', (), post)() for post in data]
-        return post_dict
+        elif type(data) is list:
+            post_list = []
+            for i in data:
+                i['is_json'] = is_json
+                i['status'] = status
+                post = Post(**i)
+                post_list.append(post)
+            return post_list
 
     @classmethod
     def get_post(cls, id):
-        data = cls._connect_to_api(request='get', id=id)
-        dic = cls._make_dict_from_data(*data)
-        return type('Post', (), dic)()
+        return cls.class_maker(*cls._connect_to_api(request='get', sub_url='posts', id=id))
 
     @classmethod
     def get_posts(cls):
-        data = cls._connect_to_api(request='get')
-        dic = cls._make_dict_from_data(*data)
-        return type('Posts', (), dic)()
+        return cls.class_maker(*cls._connect_to_api(request='get', sub_url='posts'))
 
     @classmethod
     def post_to_api(cls, data):
-        json_data = JsonConverter.to_json(data)
-        answer = cls._connect_to_api(request='post', json_data=json_data)
-        dic = cls._make_dict_from_data(*answer)
-        return type('Posts', (), dic)()
+        return cls.class_maker(*cls._connect_to_api(request='post', sub_url='posts', json_data=data))
+
+    @classmethod
+    def get_user(cls, id):
+        return cls.class_maker(*cls._connect_to_api(request='get', sub_url='users', id=id))
+
+    @classmethod
+    def get_users(cls):
+        return cls.class_maker(*cls._connect_to_api(request='get', sub_url='users'))

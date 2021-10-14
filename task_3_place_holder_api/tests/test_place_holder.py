@@ -1,37 +1,38 @@
-from task_3_place_holder_api.tests import test_data
 from task_3_place_holder_api.place_holder_api import PlaceHolderApi
+from task_3_place_holder_api.tests import test_data
 
 
 class TestPlaceHolder:
     def test_post_get(self):
         posts = PlaceHolderApi.get_posts()
-        assert posts.status == 200, 'Статус код не 200'
-        assert posts.is_json, 'Данные не являются json'
-        ids_lst = [post.id for post in posts.data]
+        assert posts[0].status == 200, 'Статус код не 200'
+        assert posts[0].is_json, 'Данные не являются json'
+        ids_lst = [post.id for post in posts]
         assert ids_lst == sorted(ids_lst), 'Список не отсортирован по возрастанию'
 
-        post_99 = PlaceHolderApi.get_post(99)
-        assert post_99.status == 200, 'Статус код не 200'
-        assert post_99.data.userId == 10
-        assert post_99.data.id == 99
-        assert post_99.data.title != ''
-        assert post_99.data.body != ''
+        actual_post_99 = PlaceHolderApi.get_post(99)
+        expected_post = PlaceHolderApi.class_maker(*test_data.expected_post_99)
+        assert actual_post_99 == expected_post, 'Пост 99 не соответсвует ожидаемому'
 
-        post_150 = PlaceHolderApi.get_post(150)
-        assert post_150.status == 404, 'Сатус код не 404'
-        assert post_150.data
+        actual_post_150 = PlaceHolderApi.get_post(150)
+        assert actual_post_150.status == 404
+        assert actual_post_150.is_empty, 'Пост 150 пустой'
 
-        post_to_api = PlaceHolderApi.post_to_api(test_data.post_data)
-        assert post_to_api.status == 201, 'Статус код не 201'
-        assert post_to_api.data.id, 'Ответ не содержит поле "id"'
+        posting_to_api = PlaceHolderApi.post_to_api(test_data.posting_data)
+        assert posting_to_api.status == 201
+        expected_post_data = PlaceHolderApi.class_maker(test_data.expected_post_data, True, 201)
+        assert posting_to_api == expected_post_data, 'Результат постинга не соответсвует ожидаемому'
+        assert 'id' in posting_to_api.__dict__, 'Ответ не содержит поле "id"'
 
+        actual_users = PlaceHolderApi.get_users()
+        assert actual_users[0].status == 200
+        assert actual_users[0].is_json
+        expected_user = PlaceHolderApi.class_maker(test_data.user_5_data, True, 200)
+        actual_user_five = None
+        for user in actual_users:
+            if user.id == 5: actual_user_five = user
+        assert actual_user_five == expected_user, 'Пользователь 5 не найден либо данные не соответсвуют ожидаемым'
 
-        # ApiUtils.get_from_api(test_data.users)
-        # assert ApiUtils.get_status_code() == 200, 'Статус код не 200'
-        # assert ApiUtils.result_is_json(), 'Данные не являются json'
-        # user_5_data = ApiUtils.get_result_with('id', 5)
-        # assert user_5_data == test_data.user_5_data, 'Данные пользователя 5 не совпадают'
-        #
-        # ApiUtils.get_from_api(test_data.users + '/5')
-        # assert ApiUtils.get_status_code() == 200, 'Статус код не 200'
-        # assert ApiUtils.get_result() == test_data.user_5_data, 'Данные пользователя 5 не совпадают'
+        user_five = PlaceHolderApi.get_user(5)
+        assert user_five.status == 200
+        assert user_five == actual_user_five

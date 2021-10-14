@@ -2,11 +2,27 @@ from framework.utils.random_generator import RandomGenerator as RandGen
 
 base_url = 'https://jsonplaceholder.typicode.com'
 sub_url_posts = '/posts'
-post_data = {
+
+expected_post_99 = ({
+                        'userId': 10,
+                        'id': 99,
+                        'title': 'temporibus sit alias delectus eligendi possimus magni',
+                        'body': 'quo deleniti praesentium dicta non quod\naut est molestias\nmolestias et officia quis nihil\nitaque dolorem quia'
+                    }, True, 200)
+
+posting_data = {
     "title": RandGen.generate_random_string(8),
     "body": RandGen.generate_random_string(8),
-    "userId": 1
+    "userId": '1'
 }
+
+expected_post_data = {
+    "title": posting_data['title'],
+    "body": posting_data['body'],
+    "userId": '1',
+    'id': 101
+}
+
 users = '/users'
 user_5_data = {
     'id': 5,
