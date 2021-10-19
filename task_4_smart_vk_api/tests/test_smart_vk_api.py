@@ -6,7 +6,7 @@ from framework.browser.browser import Browser
 from task_4_smart_vk_api.pages.feed_page import FeedPage
 from task_4_smart_vk_api.pages.my_profile_page import MyProfilePage
 from task_4_smart_vk_api.utils.vk_api_utils import VkApiUtils
-from framework.utils.random_generator import RandomGenerator
+from framework.utils.random_generator import RanGen
 
 
 class TestSmartVKApi:
@@ -23,11 +23,15 @@ class TestSmartVKApi:
         my_profile_page = MyProfilePage()
         assert my_profile_page.is_opened()
 
-        random_text = RandomGenerator.generate_random_string(30)
-        response = VkApiUtils.create_the_post_with_text(random_text)
-        assert my_profile_page.post_was_added(id=TestData.OWNER_ID, post_id=response.post_id, expected_text=random_text)
+        random_text_1 = RanGen.generate_random_string(30)
+        response = VkApiUtils.create_the_post_with_text(random_text_1)
+        assert my_profile_page.post_exists(id=TestData.OWNER_ID, post_id=response.post_id)
+        actual_text = my_profile_page.get_post_text(id=TestData.OWNER_ID, post_id=response.post_id)
+        assert random_text_1 == actual_text
 
-        random_text_2 = RandomGenerator.generate_random_string(30)
+        random_text_2 = RanGen.generate_random_string(30)
         VkApiUtils.add_picture_and_change_text_of_post(post_id=response.post_id, new_text=random_text_2, image=TestData.IMAGE)
+        actual_text = my_profile_page.get_post_text(id=TestData.OWNER_ID, post_id=response.post_id)
+        assert random_text_1 != actual_text
 
 

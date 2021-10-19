@@ -10,56 +10,55 @@ class VkApiUtils:
     _OWNER_ID = TestData.OWNER_ID
 
     @classmethod
-    def to_response_model(cls, data):
-        if 'error' in data:
-            raise Exception(f'vk.com returned an error: {data}')
-        elif 'response' in data:
-            model_data = ResponseModel(**data['response'])
-        elif 'server' in data:
-            model_data = ResponseModel(**data)
+    def to_response_model(cls, response):
+        if 'response' in response:
+            if type(response['response']) is dict:
+                return ResponseModel(**response['response'])
+            elif type(response['response']) is list:
+                return [ResponseModel(**i) for i in response['response']]
         else:
-            raise Exception(f'vk.com returned unknown response: {data}')
-        return model_data
+            return ResponseModel(**response)
+        # raise Exception(f'vk.com returned unknown response: {response}')
 
     @classmethod
-    def result_parser(cls, result):
-        if 'error' in result:
-            raise Exception(f"vk.com returned an error: {result['error']}")
-        else:
-            return result
+    def _error_checker(cls, response):
+        if 'error' in response:
+            raise Exception(f"vk.com returned an error: {response['error']}")
+        elif 'response' in response:
+            return response['response']
+        return response
 
     @classmethod
     def create_the_post_with_text(cls, text):
         method = 'wall.post'
         params = f'owner_id={cls._OWNER_ID}&message={text}&'
         url = cls._BASE_URL.format(METHOD=method, PARAMS=params, TOKEN=cls._TOKEN, V=cls._V)
-        result = ApiUtils.get_from_api(url)
+        result = cls._error_checker(ApiUtils.get_from_api(url))
         return cls.to_response_model(result)
 
     @classmethod
-    def get_link_for_image_uploading(cls):
+    def _get_link_for_image_uploading(cls):
         method = 'photos.getWallUploadServer'
         url = cls._BASE_URL.format(METHOD=method, PARAMS='', TOKEN=cls._TOKEN, V=cls._V)
-        result = ApiUtils.get_from_api(url)
-        return cls.to_response_model(result).upload_url
+        result = cls._error_checker(ApiUtils.get_from_api(url))
+        return result['upload_url']
 
     @classmethod
     def upload_an_image(cls, image):
         method = 'photos.saveWallPhoto'
-        upload_url = cls.get_link_for_image_uploading()
-        response = ApiUtils.post_to_api_multipart(upload_url, image)
-        result = cls.to_response_model(response)
-        params = f'photo={result.photo}&hash={result.hash}&server={result.server}&'
+        upload_url = cls._get_link_for_image_uploading()
+        result = cls._error_checker(ApiUtils.post_to_api_multipart(upload_url, image))  # upload
+
+        params = f"photo={result['photo']}&hash={result['hash']}&server={result['server']}&"
         url = cls._BASE_URL.format(METHOD=method, PARAMS=params, TOKEN=cls._TOKEN, V=cls._V)
-        result_after_upload = ApiUtils.get_from_api(url)
-        return result_after_upload['response'][0]
+        result_after_upload = cls._error_checker(ApiUtils.get_from_api(url))
+        return result_after_upload[0]
 
     @classmethod
     def add_picture_and_change_text_of_post(cls, post_id, new_text, image):
-        response = cls.upload_an_image(image)
-        picture_id = response['id']
         method = 'wall.edit'
+        result_after_upload = cls.upload_an_image(image)
+        picture_id = result_after_upload['id']
         params = f'owner_id={cls._OWNER_ID}&post_id={post_id}&message={new_text}&attachments=photo{cls._OWNER_ID}_{picture_id}&'
         url = cls._BASE_URL.format(METHOD=method, PARAMS=params, TOKEN=cls._TOKEN, V=cls._V)
-        result = ApiUtils.get_from_api(url)
-        return cls.to_response_model(result)
+        cls._error_checker(ApiUtils.get_from_api(url))

@@ -12,16 +12,20 @@ from framework.elements.content import Content
 class MyProfilePage(BasePage):
     _LNK_MY_POSTS = Link(By.XPATH, locator='//li[@class="_wall_tab_own"]//a', name='MyPosts')
     _loc_post = '//div[@data-post-id="{id}_{number}"]'
-    _loc_post_text = "//div[contains(@class, 'wall_post_text zoom_text')]"
+    _loc_post_text = "//div[contains(@class, 'wall_post_text')]"
 
     def __init__(self):
         super().__init__(element=self._LNK_MY_POSTS)
         self.wait_for_page_opened()
 
-    def post_was_added(self, id, post_id, expected_text):
+    def post_exists(self, id, post_id):
         cont_post = Content(By.XPATH, locator=self._loc_post.format(id=id, number=post_id), name='Post')
-        actual_text = cont_post(sub_locator=self._loc_post_text, new_name_of='PostText').get_text()
-        return cont_post.is_displayed() and actual_text == expected_text
+        return cont_post.is_displayed()
 
-    def post_was_changed(self):
+    def get_post_text(self, id, post_id):
+        cont_post = Content(By.XPATH, locator=self._loc_post.format(id=id, number=post_id), name='Post')
+        text = cont_post(sub_locator=self._loc_post_text, new_name_of='PostText').get_text()
+        return text
+
+    def get_post_image(self, id, post_id):
         pass

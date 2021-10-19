@@ -3,7 +3,7 @@ import secrets
 import string
 
 
-class RandomGenerator:
+class RanGen:
     @classmethod
     def generate_random_string(cls, length):
         return ''.join(random.choice(
