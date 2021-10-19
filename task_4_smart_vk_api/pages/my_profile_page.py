@@ -18,7 +18,10 @@ class MyProfilePage(BasePage):
         super().__init__(element=self._LNK_MY_POSTS)
         self.wait_for_page_opened()
 
-    def post_was_added(self, id, number, expected_text):
-        cont_post = Content(By.XPATH, locator=self._loc_post.format(id=id, number=number), name='Post')
+    def post_was_added(self, id, post_id, expected_text):
+        cont_post = Content(By.XPATH, locator=self._loc_post.format(id=id, number=post_id), name='Post')
         actual_text = cont_post(sub_locator=self._loc_post_text, new_name_of='PostText').get_text()
         return cont_post.is_displayed() and actual_text == expected_text
+
+    def post_was_changed(self):
+        pass

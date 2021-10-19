@@ -7,8 +7,8 @@ from framework.utils.json_converter import JsonConverter
 
 class ApiUtils:
     @staticmethod
-    def _result_parser(result, status):
-        if result.status_code == status:
+    def _result_parser(result, status_codes):
+        if result.status_code in status_codes:
             data = JsonConverter.from_json(result.text)
             return data
         else:
@@ -18,11 +18,17 @@ class ApiUtils:
     def get_from_api(cls, url):
         Logger.info(f"Get запрос к API {url}")
         result = requests.get(url)
-        return cls._result_parser(result, codes.OK)
+        return cls._result_parser(result, (codes.OK,))
 
     @classmethod
     def post_to_api(cls, url, data):
         json_data = JsonConverter.to_json(data)
-        Logger.info(f"Post запрос к API {url}")
+        Logger.info(f"Post запрос к API '{url}', {data}")
         result = requests.post(url, json_data)
-        return cls._result_parser(result, codes.CREATED)
+        return cls._result_parser(result, (codes.OK, codes.CREATED))
+
+    @classmethod
+    def post_to_api_multipart(cls, url, files):
+        Logger.info(f"Multipart post запрос к API '{url}', {files}")
+        result = requests.post(url, files=files)
+        return cls._result_parser(result, (codes.OK, codes.CREATED))
