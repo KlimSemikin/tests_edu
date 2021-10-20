@@ -3,15 +3,17 @@ from selenium.webdriver.common.by import By
 from framework.elements.text_box import TextBox
 from framework.pages.base_page import BasePage
 from task_4_smart_vk_api.tests.test_data.test_data import TestData
+from framework.elements.button import Button
 
 
 class WelcomePage(BasePage):
+    _BTN_FACEBOOK = Button(By.XPATH, locator='//div[contains(@class, "FacebookLogin__button")]', name='Facebook')
     _TXB_EMAIL_OR_PHONE = TextBox(By.XPATH, locator="//input[@id='index_email']", name='PhoneEmail')
     _TXB_PASSWORD = TextBox(By.XPATH, locator="//input[@id='index_pass']", name='Password')
     _BTN_SIGN_IN = TextBox(By.XPATH, locator="//button[@id='index_login_button']", name='SignIn')
 
     def __init__(self):
-        super().__init__(element=self._TXB_EMAIL_OR_PHONE)
+        super().__init__(element=self._BTN_FACEBOOK)
         self.wait_for_page_opened()
 
     def enter_email_or_phone(self):

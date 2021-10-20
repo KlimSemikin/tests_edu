@@ -55,6 +55,11 @@ class BaseElement(ABC):
         element = self.wait_for_check_by_condition(method_to_check=waiter, message=" не был найден")
         return element
 
+    def find_elements(self):
+        waiter = ec.presence_of_all_elements_located((self.get_search_condition(), self.get_locator()))
+        elements = self.wait_for_check_by_condition(method_to_check=waiter, message=" не были найдены")
+        return elements
+
     @staticmethod
     def get_displayed_elements(condition, locator):
         element_size = len(Browser.get_browser().get_driver().find_elements(condition, locator))
@@ -96,7 +101,7 @@ class BaseElement(ABC):
         return self.get_elements_count() > 0
 
     def get_elements_count(self):
-        elements_count = len(Browser.get_browser().get_driver().find_elements(self.__search_condition, self.__locator))
+        elements_count = len(self.find_elements())
         return elements_count
 
     def send_keys(self, key):

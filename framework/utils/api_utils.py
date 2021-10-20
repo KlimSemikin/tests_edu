@@ -10,6 +10,7 @@ class ApiUtils:
     def _result_parser(result, status_codes):
         if result.status_code in status_codes:
             data = JsonConverter.from_json(result.text)
+            Logger.info(f"ПОлучен ответ от API: {data}")
             return data
         else:
             raise Exception(f"Error {result.status_code} returned from API")

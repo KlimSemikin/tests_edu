@@ -1,3 +1,6 @@
+import os
+
+
 class TestData:
     MAIN_URL = 'https://vk.com/'
     PHONE_OR_EMAIL = '375291660762'
@@ -6,3 +9,5 @@ class TestData:
     API_LAST_VERSION = '5.131'
     BASE_URL = 'https://api.vk.com/method/{METHOD}?{PARAMS}&access_token={TOKEN}&v={V}'
     OWNER_ID = '627657327'
+    IMAGE = {'photo': open(r'test_data/test_picture.jpg', 'rb')}
+    IMAGE_PATH = os.path.abspath(f'test_data\\test_picture.jpg')

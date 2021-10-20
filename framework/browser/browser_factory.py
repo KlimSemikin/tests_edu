@@ -39,7 +39,7 @@ class BrowserFactory:
             firefox_profile = webdriver.FirefoxProfile()
             firefox_options = webdriver.FirefoxOptions()
             if lang:
-                firefox_options.add_argument(f"--lang={lang}")
+                firefox_profile.set_preference('intl.accept_languages', lang)
             if is_incognito:
                 firefox_profile.set_preference("browser.privatebrowsing.autostart", True)
             if enable_performance_logging:
