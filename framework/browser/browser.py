@@ -10,6 +10,7 @@ from framework.utils.logger import Logger
 from framework.waits.wait_for_custom_event import WaitForCustomEvent
 from framework.waits.wait_for_ready_state_complete import WaitForReadyStateComplete
 from framework.waits.wait_for_true_with_action import WaitForTrueWithAction
+from framework.constants import browsers
 
 
 class Browser(metaclass=Singleton):
@@ -32,7 +33,7 @@ class Browser(metaclass=Singleton):
         return self.__web_driver[self.__selected_browser]
 
     def set_up_driver(self, browser_key=BrowserConfig.BROWSER, capabilities=None, is_incognito=False,
-                      enable_performance_logging=False, test_name=None, grid_port=None):
+                      enable_performance_logging=False, test_name=None, grid_port=None, lang=None):
         Logger.info('Инициализация драйвера для браузера ' + BrowserConfig.BROWSER)
         if browser_key in self.__web_driver:
             raise ValueError("Браузер с  ключом '{}', уже создан.".format(browser_key))
@@ -40,7 +41,7 @@ class Browser(metaclass=Singleton):
             BrowserFactory.get_browser_driver(capabilities=capabilities,
                                               is_incognito=is_incognito,
                                               enable_performance_logging=enable_performance_logging,
-                                              test_name=test_name, grid_port=grid_port)
+                                              test_name=test_name, grid_port=grid_port, lang=lang)
         self.__web_driver[browser_key].implicitly_wait(Waits.IMPLICITLY_WAIT_SEC)
         self.__web_driver[browser_key].set_page_load_timeout(Waits.PAGE_LOAD_TIMEOUT_SEC)
         self.__web_driver[browser_key].set_script_timeout(Waits.SCRIPT_TIMEOUT_SEC)

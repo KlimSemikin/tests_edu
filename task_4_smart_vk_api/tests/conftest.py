@@ -10,6 +10,8 @@ def pytest_addoption(parser):
                      help="Name of browser")
     parser.addoption("--grid_port", action="store", default=Grid.GRID_PORT,
                      help="Port of remote connection")
+    parser.addoption("--lang", action="store", default=BrowserConfig.LOCALE,
+                     help="Browser language")
 
 
 @pytest.fixture(scope="function")
@@ -21,7 +23,9 @@ def create_browser(request):
     """
     with allure.step("Создание сессии браузера из конфиг файла"):
         browser = request.config.getoption('--browser')
-        Browser.get_browser().set_up_driver(browser_key=browser, grid_port=request.config.getoption('--grid_port'))
+        grid_port = request.config.getoption('--grid_port')
+        language = request.config.getoption('--lang')
+        Browser.get_browser().set_up_driver(browser_key=browser, grid_port=grid_port, lang=language)
         Browser.get_browser().maximize(browser_key=browser)
 
     yield

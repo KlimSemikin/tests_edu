@@ -1,6 +1,7 @@
 from framework.utils.api_utils import ApiUtils
 from task_4_smart_vk_api.tests.test_data.test_data import TestData
 from task_4_smart_vk_api.utils.response_model import ResponseModel
+import collections
 
 
 class VkApiUtils:
@@ -16,15 +17,14 @@ class VkApiUtils:
                 return ResponseModel(**response['response'])
             elif type(response['response']) is list:
                 return [ResponseModel(**i) for i in response['response']]
-        else:
-            return ResponseModel(**response)
+        return ResponseModel(**response)
         # raise Exception(f'vk.com returned unknown response: {response}')
 
     @classmethod
     def _error_checker(cls, response):
         if 'error' in response:
             raise Exception(f"vk.com returned an error: {response['error']}")
-        elif 'response' in response:
+        elif 'response' in response and type(response['response']) in (dict, list):
             return response['response']
         return response
 
@@ -62,3 +62,27 @@ class VkApiUtils:
         params = f'owner_id={cls._OWNER_ID}&post_id={post_id}&message={new_text}&attachments=photo{cls._OWNER_ID}_{picture_id}&'
         url = cls._BASE_URL.format(METHOD=method, PARAMS=params, TOKEN=cls._TOKEN, V=cls._V)
         cls._error_checker(ApiUtils.get_from_api(url))
+
+    @classmethod
+    def add_comment_to_post(cls, post_id, comment_text):
+        method = 'wall.createComment'
+        params = f'owner_id={cls._OWNER_ID}&post_id={post_id}&message={comment_text}&'
+        url = cls._BASE_URL.format(METHOD=method, PARAMS=params, TOKEN=cls._TOKEN, V=cls._V)
+        result = cls._error_checker(ApiUtils.get_from_api(url))
+        return cls.to_response_model(result)
+
+    @classmethod
+    def get_post_likes(cls, post_id):
+        method = 'likes.getList'
+        params = f'owner_id={cls._OWNER_ID}&item_id={post_id}&type=post&'
+        url = cls._BASE_URL.format(METHOD=method, PARAMS=params, TOKEN=cls._TOKEN, V=cls._V)
+        result = cls._error_checker(ApiUtils.get_from_api(url))
+        return cls.to_response_model(result)
+
+    @classmethod
+    def delete_the_post(cls, post_id):
+        method = 'wall.delete'
+        params = f'owner_id={cls._OWNER_ID}&post_id={post_id}&type=post&'
+        url = cls._BASE_URL.format(METHOD=method, PARAMS=params, TOKEN=cls._TOKEN, V=cls._V)
+        result = cls._error_checker(ApiUtils.get_from_api(url))
+        return cls.to_response_model(result)

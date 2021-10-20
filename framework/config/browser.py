@@ -1,9 +1,14 @@
+from framework.constants import browsers
+
+
 class BrowserConfig(object):
     # Настройки браузера
     # Поддерживаемые браузеры: "chrome", "firefox"
-    BROWSER = "chrome"
+    # Поддерживаемые локализации: "ru", "en", "es" и т.д
+    BROWSER = browsers.BROWSER_CHROME
     CHROME_VERSION = "75.0"
     FIREFOX_VERSION = "66.0"
+    LOCALE = 'en'
 
 
 class Grid(object):

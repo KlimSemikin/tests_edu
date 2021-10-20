@@ -14,13 +14,14 @@ class BrowserFactory:
 
     @staticmethod
     def get_browser_driver(capabilities=None, is_incognito=False, enable_performance_logging=False, test_name=None,
-                           grid_port=None):
+                           grid_port=None, lang=None):
         if capabilities is None:
             capabilities = {}
         if BrowserConfig.BROWSER == browsers.BROWSER_CHROME:
             chrome_options = webdriver.ChromeOptions()
             chrome_options.add_experimental_option('w3c', False)
-
+            if lang:
+                chrome_options.add_argument(f"--lang={lang}")
             if is_incognito:
                 chrome_options.add_argument("--incognito")
             if enable_performance_logging:
@@ -36,7 +37,9 @@ class BrowserFactory:
 
         elif BrowserConfig.BROWSER == browsers.BROWSER_FIREFOX:
             firefox_profile = webdriver.FirefoxProfile()
-            firefox_options = None
+            firefox_options = webdriver.FirefoxOptions()
+            if lang:
+                firefox_options.add_argument(f"--lang={lang}")
             if is_incognito:
                 firefox_profile.set_preference("browser.privatebrowsing.autostart", True)
             if enable_performance_logging:
@@ -45,7 +48,8 @@ class BrowserFactory:
             if Grid.USE_GRID:
                 return BrowserFactory.get_remote_driver(browser_name=BrowserConfig.BROWSER,
                                                         browser_version=BrowserConfig.FIREFOX_VERSION,
-                                                        browser_profile=firefox_profile, capabilities=capabilities,
+                                                        options=firefox_options, browser_profile=firefox_profile,
+                                                        capabilities=capabilities,
                                                         test_name=test_name, grid_port=grid_port)
             else:
                 return webdriver.Firefox(executable_path=GeckoDriverManager().install(),
