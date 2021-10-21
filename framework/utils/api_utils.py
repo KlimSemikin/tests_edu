@@ -1,8 +1,8 @@
 import requests
 
-from framework.utils.logger import Logger
 from framework.constants import requests_status_codes as codes
 from framework.utils.json_converter import JsonConverter
+from framework.utils.logger import Logger
 
 
 class ApiUtils:

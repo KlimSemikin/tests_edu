@@ -1,5 +1,3 @@
-# import os
-
 from framework.browser.browser import Browser
 from framework.utils.image_utils import ImageUtils
 from framework.utils.random_generator import RanGen

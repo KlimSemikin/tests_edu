@@ -10,3 +10,7 @@ class ResponseModel:
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    @property
+    def params(self):
+        return sorted(self.__dict__)
