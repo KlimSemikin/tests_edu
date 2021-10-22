@@ -27,3 +27,13 @@ class RanGen:
         alphabet = string.ascii_letters + string.digits
         password = ''.join(secrets.choice(alphabet) for _ in range(length))
         return password
+
+    @classmethod
+    def generate_n_random_repeatable_numbers_in_range(cls, n, a, b):
+        answer = []
+        while len(answer) < n:
+            num = random.randint(a, b)
+            num_num = str(num) * 2
+            if num_num not in answer:
+                answer.append(num_num)
+        return answer
