@@ -7,7 +7,11 @@ class VkApiUtils:
     _BASE_URL = TestData.BASE_URL
     _TOKEN = TestData.ACCESS_TOKEN_PHOTOS_WALL
     _V = TestData.API_LAST_VERSION
-    _OWNER_ID = TestData.OWNER_ID
+    _OWNER_ID = ''
+
+    @classmethod
+    def set_owner_id(cls, o_id):
+        cls._OWNER_ID = o_id
 
     @classmethod
     def to_response_model(cls, response):

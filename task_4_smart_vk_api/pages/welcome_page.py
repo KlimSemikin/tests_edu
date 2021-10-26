@@ -16,16 +16,16 @@ class WelcomePage(BasePage):
         super().__init__(element=self._BTN_FACEBOOK)
         self.wait_for_page_opened()
 
-    def enter_email_or_phone(self):
-        self._TXB_EMAIL_OR_PHONE.send_keys(TestData.PHONE_OR_EMAIL)
+    def enter_email_or_phone(self, email):
+        self._TXB_EMAIL_OR_PHONE.send_keys(email)
 
-    def enter_password(self):
-        self._TXB_PASSWORD.send_keys(TestData.PASSWORD)
+    def enter_password(self, password):
+        self._TXB_PASSWORD.send_keys(password)
 
     def click_sign_in_button(self):
         self._BTN_SIGN_IN.click()
 
-    def sign_in(self):
-        self.enter_email_or_phone()
-        self.enter_password()
+    def sign_in(self, email, password):
+        self.enter_email_or_phone(email)
+        self.enter_password(password)
         self.click_sign_in_button()

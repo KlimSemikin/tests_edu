@@ -16,10 +16,13 @@ class MyProfilePage(BasePage):
     _loc_post_comment_author = "//a[@class='author']"
     _loc_like_post = "//a[contains(@class, 'like_btn')][1]"
 
-    def __init__(self, owner_id):
+    def __init__(self):
         super().__init__(element=self._LNK_MY_POSTS)
         self.wait_for_page_opened()
-        self.owner_id = owner_id
+        self.owner_id = ''
+
+    def set_owner_id(self, o_id):
+        self.owner_id = o_id
 
     def post_exists(self, post_id):
         cont_post = Content(By.XPATH, locator=self._loc_post.format(id=self.owner_id, number=post_id), name='Post')
@@ -41,12 +44,12 @@ class MyProfilePage(BasePage):
         img_source = self._CONT_OPEN_IMAGE.get_attribute('src')
         return img_source
 
-    def comment_exist(self, reply_author_id, post_id):
-        cont_post = Content(By.XPATH, locator=self._loc_post.format(id=reply_author_id, number=post_id), name='Post')
+    def comment_exist(self, post_id, reply_author_id=None):
+        cont_post = Content(By.XPATH, locator=self._loc_post.format(id=reply_author_id or self.owner_id, number=post_id), name='Post')
         cont_post(sub_locator=self._lnk_show_comments, new_name_of='LinkShowComments').click()
         comment = cont_post(sub_locator=self._loc_post_comment, new_name_of='Comment')
         comment_author = comment(sub_locator=self._loc_post_comment_author, new_name_of='CommentAuthor')
-        return comment_author.get_attribute('data-from-id') == reply_author_id
+        return comment_author.get_attribute('data-from-id') == (reply_author_id or self.owner_id)
 
     def like_the_post(self, post_id):
         cont_post = Content(By.XPATH, locator=self._loc_post.format(id=self.owner_id, number=post_id), name='Post')
