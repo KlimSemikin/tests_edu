@@ -2,13 +2,13 @@ import os
 
 import task_2_userinterface.tests.test_data as td
 from framework.browser.browser import Browser
+from framework.utils.datetime_util import DatetimeUtil
 from framework.utils.random_generator import RanGen
 from task_2_userinterface.pages.card_one_page import CardOnePage
 from task_2_userinterface.pages.card_three_page import CardThreePage
 from task_2_userinterface.pages.card_two_page import CardTwoPage
 from task_2_userinterface.pages.welcome_page import WelcomePage
 from task_2_userinterface.sql.test_table import TestTable
-from framework.utils.datetime_util import DatetimeUtil
 
 
 class TestUserInterface(object):
@@ -46,12 +46,21 @@ class TestUserInterface(object):
 
 
 class TestDataBase:
+    @staticmethod
+    def get_params_for_repeatable_ids():
+        return {'number_of_rows': 9, 'min_num': 1, 'max_num': 9}
+
     def test_db(self, pre_post_conditions_for_tc_2):
         ids = pre_post_conditions_for_tc_2
-        TestTable().update_item(ids[0], column='status_id', value=2)
-        TestTable().update_item(ids[1], column='start_time', value=DatetimeUtil.get_str_datetime())
-        import time
-        time.sleep(1)
-        TestTable().update_item(ids[1], column='end_time', value=DatetimeUtil.get_str_datetime())
-        TestTable().update_item(ids[2], column='browser', value='firefox')
-        TestTable().update_item(ids[3], column='env', value='test_env')
+        for i in range(len(ids)):
+            if i == 0:
+                TestTable().update_item(ids[i], column='status_id', value=2)
+            elif i == 1:
+                TestTable().update_item(ids[i], column='start_time', value=DatetimeUtil.get_str_datetime())
+                import time
+                time.sleep(1)
+                TestTable().update_item(ids[i], column='end_time', value=DatetimeUtil.get_str_datetime())
+            elif i == 2:
+                TestTable().update_item(ids[i], column='browser', value='firefox')
+            else:
+                TestTable().update_item(ids[i], column='env', value='test_env')
